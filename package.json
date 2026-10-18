@@ -1,0 +1,85 @@
+{
+  "name": "privbrowse",
+  "productName": "PrivBrowse",
+  "version": "1.0.0",
+  "description": "A tiny privacy-first browser",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "package": "electron-packager . PrivBrowse --platform=win32 --arch=x64 --out=dist --overwrite --ignore=dist",
+    "dist": "electron-builder --publish never"
+  },
+  "devDependencies": {
+    "@electron/packager": "latest",
+    "electron": "latest",
+    "electron-builder": "latest"
+  },
+  "author": {
+    "name": "Reyon Bueno",
+    "email": "godbuster2022@gmail.com"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/ReyonHAS/PrivBrowse",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ReyonHAS/PrivBrowse.git"
+  },
+  "build": {
+    "appId": "com.privbrowse.app",
+    "productName": "PrivBrowse",
+    "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
+    "files": [
+      "main.js",
+      "preload.js",
+      "renderer.js",
+      "filterengine.js",
+      "index.html",
+      "style.css",
+      "newtab.html",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "mac": {
+      "category": "public.app-category.productivity",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ]
+    },
+    "linux": {
+      "category": "Network",
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "deb",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,120 @@
+:root {
+  --bg: #2b2a33;
+  --strip: #1c1b22;
+  --pill: #42414d;
+  --hover: #52525e;
+  --text: #fbfbfe;
+  --muted: #9e9ea8;
+  --accent: #00b3f4;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body {
+  display: flex; flex-direction: column; background: var(--bg); color: var(--text);
+  font: 13px "Segoe UI", system-ui, sans-serif; overflow: hidden; user-select: none;
+}
+button {
+  font: inherit; color: var(--text); background: transparent; border: none; border-radius: 6px;
+  cursor: pointer; padding: 5px 9px;
+}
+button:hover { background: var(--hover); }
+button.icon { font-size: 15px; }
+input { font: inherit; color: var(--text); }
+
+/* ---------- tab strip ---------- */
+#tabstrip { display: flex; align-items: stretch; background: var(--strip); height: 42px; padding: 0 6px; min-width: 0; }
+#tabs { display: flex; align-items: center; min-width: 0; flex: 0 1 auto; gap: 2px; overflow: hidden; }
+#newtab-btn { align-self: center; font-size: 18px; margin-left: 2px; flex: none; }
+#strip-space { flex: 1; min-width: 20px; }
+
+.tab {
+  position: relative; display: flex; align-items: center; gap: 7px; height: 32px;
+  flex: 1 1 0; min-width: 40px; max-width: 220px; padding: 0 8px 0 10px; border-radius: 8px;
+  color: #cfcfd8; overflow: hidden; cursor: default;
+  transition: background 0.12s;
+}
+.tab:hover:not(.active) { background: var(--bg); }
+.tab.active { background: var(--pill); color: var(--text); }
+.tab.pinned { flex: 0 0 38px; min-width: 38px; max-width: 38px; padding: 0; justify-content: center; }
+.tab .fav { width: 16px; height: 16px; flex: none; border-radius: 3px; }
+.tab .letter {
+  width: 16px; height: 16px; flex: none; border-radius: 4px; background: #55546a; color: #fff;
+  font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center;
+}
+.tab .title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tab .x { flex: none; width: 20px; height: 20px; padding: 0; font-size: 11px; line-height: 20px; border-radius: 10px; }
+.tab.pinned .x, .tab.pinned .title { display: none; }
+.tab.grouped::after {
+  content: ""; position: absolute; left: 6px; right: 6px; bottom: 0; height: 3px; border-radius: 2px;
+  background: var(--gc);
+}
+.tab.loading .letter, .tab.loading .fav { animation: pulse 0.9s ease-in-out infinite; }
+@keyframes pulse { 50% { opacity: 0.35; } }
+
+/* Opera-style open / close animation */
+.tab.enter { animation: tab-in 0.16s ease-out; }
+@keyframes tab-in { from { opacity: 0; transform: scaleX(0.6); } to { opacity: 1; transform: scaleX(1); } }
+.tab.closing { animation: tab-out 0.12s ease-in forwards; pointer-events: none; }
+@keyframes tab-out { to { opacity: 0; transform: scaleX(0.5); } }
+
+.chip {
+  flex: none; height: 22px; padding: 0 8px; margin: 0 2px; border-radius: 6px; color: #111;
+  font-size: 12px; font-weight: 600; line-height: 22px; max-width: 120px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; cursor: pointer;
+}
+.chip.dot { width: 22px; padding: 0; }
+
+/* ---------- nav row ---------- */
+#navrow { display: flex; align-items: center; gap: 4px; padding: 6px 8px; background: var(--bg); }
+#pill {
+  display: flex; align-items: center; flex: 1; height: 34px; background: var(--pill);
+  border: 2px solid transparent; border-radius: 9px; padding: 0 4px; min-width: 0;
+}
+#pill:focus-within { border-color: var(--accent); }
+#engine-btn { font-weight: 700; font-size: 15px; padding: 3px 8px; flex: none; }
+#url { flex: 1; min-width: 0; background: transparent; border: none; outline: none; font-size: 14px; padding: 5px 4px; user-select: text; }
+#url::placeholder { color: var(--muted); }
+#star { padding: 1px 6px; font-size: 17px; }
+#star.on { color: #f2c94c; }
+#shield.off { color: #f2994a; }
+
+/* ---------- bookmarks bar ---------- */
+#bmbar { display: flex; gap: 2px; padding: 0 8px 4px; background: var(--bg); min-height: 26px; overflow: hidden; }
+#bmbar button { font-size: 12px; padding: 3px 8px; white-space: nowrap; }
+
+/* ---------- find bar ---------- */
+#findbar { display: flex; align-items: center; gap: 6px; padding: 4px 10px; background: var(--strip); }
+#findbar[hidden] { display: none; }
+#find-input { flex: 0 1 280px; background: var(--pill); border: 2px solid transparent; border-radius: 6px; padding: 4px 8px; outline: none; user-select: text; }
+#find-input:focus { border-color: var(--accent); }
+#find-count { color: var(--muted); min-width: 40px; }
+
+/* ---------- pages ---------- */
+#views { position: relative; flex: 1; min-height: 0; background: #111; }
+webview { position: absolute; inset: 0; width: 100%; height: 100%; }
+webview.hidden { visibility: hidden; pointer-events: none; }
+body.modal webview { visibility: hidden; }
+
+/* ---------- downloads shelf ---------- */
+#dlshelf { display: flex; gap: 8px; padding: 6px 10px; background: var(--strip); overflow-x: auto; }
+#dlshelf[hidden] { display: none; }
+.dl { display: flex; align-items: center; gap: 8px; background: var(--pill); border-radius: 8px; padding: 6px 10px; flex: none; max-width: 420px; }
+.dl .name { max-width: 190px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dl .state { color: var(--muted); font-size: 12px; }
+.dl button { font-size: 12px; padding: 3px 7px; }
+
+/* ---------- status bar ---------- */
+#statusbar { display: flex; justify-content: space-between; padding: 2px 10px; background: var(--strip); color: var(--muted); font-size: 12px; min-height: 22px; }
+
+/* ---------- modal ---------- */
+.modal-back { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.45); display: flex; align-items: center; justify-content: center; z-index: 50; }
+.modal-box { background: var(--bg); border: 1px solid var(--hover); border-radius: 12px; padding: 18px 20px; width: 380px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5); }
+.modal-box h3 { margin: 0 0 12px; font-size: 15px; }
+.modal-box label { display: block; margin-bottom: 10px; color: var(--muted); }
+.modal-box input { display: block; width: 100%; margin-top: 4px; background: var(--strip); border: 1px solid var(--hover); border-radius: 6px; padding: 7px 9px; outline: none; user-select: text; }
+.modal-box input:focus { border-color: var(--accent); }
+.modal-row { display: flex; justify-content: flex-end; gap: 8px; margin-top: 4px; }
+.modal-row .primary { background: var(--accent); color: #00141c; font-weight: 600; }
+
+/* ---------- fullscreen (YouTube etc.) ---------- */
+body.fs #tabstrip, body.fs #navrow, body.fs #bmbar, body.fs #findbar, body.fs #dlshelf, body.fs #statusbar { display: none; }

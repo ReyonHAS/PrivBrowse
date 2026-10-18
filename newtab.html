@@ -1,0 +1,124 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>New Tab</title>
+<style>
+html, body { height: 100%; margin: 0; }
+body {
+  background: #2b2a33; color: #fbfbfe; font-family: "Segoe UI", system-ui, sans-serif;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.clock { font-size: 68px; font-weight: 300; letter-spacing: 1px; }
+.date { color: #9e9ea8; margin: 4px 0 34px; font-size: 15px; }
+form { width: min(720px, 80vw); }
+input {
+  width: 100%; box-sizing: border-box; padding: 16px 20px 16px 50px; font-size: 17px; color: #fbfbfe;
+  background: #42414d url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%239e9ea8' stroke-width='2.2' stroke-linecap='round'><circle cx='11' cy='11' r='7'/><path d='M20 20l-4-4'/></svg>") no-repeat 18px center;
+  border: 2px solid transparent; border-radius: 12px; outline: none;
+}
+input:focus { border-color: #00b3f4; }
+input::placeholder { color: #9e9ea8; }
+.tiles { display: flex; gap: 18px; margin-top: 44px; flex-wrap: wrap; justify-content: center; max-width: 780px; }
+.tile { position: relative; width: 92px; text-decoration: none; color: #fbfbfe; text-align: center; font-size: 12px; cursor: pointer; }
+.ico { display: flex; align-items: center; justify-content: center; width: 58px; height: 58px; margin: 0 auto 8px; border-radius: 15px; font-size: 24px; font-weight: 600; }
+.tile:hover .ico { filter: brightness(1.2); }
+.lbl { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.more {
+  position: absolute; top: -6px; right: 4px; width: 24px; height: 24px; border: none; border-radius: 12px;
+  background: #1c1b22; color: #fbfbfe; font-size: 15px; line-height: 24px; cursor: pointer; opacity: 0;
+}
+.tile:hover .more { opacity: 1; }
+.more:hover { background: #52525e; }
+.addtile .ico { background: transparent; border: 2px dashed #55546a; color: #9e9ea8; font-size: 30px; box-sizing: border-box; filter: none; }
+.addtile:hover .ico { border-color: #9e9ea8; }
+#menu { position: fixed; display: none; background: #2b2a33; border: 1px solid #52525e; border-radius: 8px; padding: 4px; z-index: 9; min-width: 150px; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4); }
+#menu div { padding: 8px 14px; border-radius: 5px; cursor: pointer; font-size: 13px; }
+#menu div:hover { background: #42414d; }
+.hint { position: fixed; bottom: 16px; color: #6e6e7a; font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="clock" id="c"></div>
+<div class="date" id="d"></div>
+<form id="f"><input id="q" autofocus autocomplete="off"></form>
+<div class="tiles" id="tiles"></div>
+<div id="menu"><div id="m-edit">Edit shortcut</div><div id="m-remove">Remove</div></div>
+<div class="hint">PrivBrowse &middot; ads and trackers blocked</div>
+<script>
+var DATA = { engine: 'DuckDuckGo', tpl: 'https://duckduckgo.com/?q={}', shortcuts: [] };
+function readData() {
+  try { DATA = JSON.parse(decodeURIComponent(location.hash.slice(1))); } catch (e) { /* keep defaults */ }
+}
+function act(a, i) { console.log('PBACT:' + JSON.stringify({ a: a, i: i })); }
+function tick() {
+  var n = new Date();
+  document.getElementById('c').textContent = n.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  document.getElementById('d').textContent = n.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' });
+}
+tick(); setInterval(tick, 10000);
+
+document.getElementById('f').addEventListener('submit', function (e) {
+  e.preventDefault();
+  var q = document.getElementById('q').value.trim();
+  if (!q) return;
+  if (/^[a-z]+:\/\//i.test(q)) location.href = q;
+  else if (!/\s/.test(q) && q.indexOf('.') > 0) location.href = 'https://' + q;
+  else location.href = DATA.tpl.replace('{}', encodeURIComponent(q));
+});
+
+function colorFor(s) {
+  var h = 0;
+  for (var k = 0; k < s.length; k++) h = (h * 31 + s.charCodeAt(k)) % 360;
+  return 'hsl(' + h + ',42%,36%)';
+}
+var menu = document.getElementById('menu'), cur = -1;
+function openMenu(i, x, y) {
+  cur = i;
+  menu.style.left = Math.min(x, innerWidth - 170) + 'px';
+  menu.style.top = Math.min(y, innerHeight - 90) + 'px';
+  menu.style.display = 'block';
+}
+document.addEventListener('click', function () { menu.style.display = 'none'; });
+document.getElementById('m-edit').onclick = function () { act('edit', cur); };
+document.getElementById('m-remove').onclick = function () { act('remove', cur); };
+
+function render() {
+  readData();
+  document.getElementById('q').placeholder = 'Search with ' + DATA.engine + ' or enter address';
+  var tiles = document.getElementById('tiles');
+  tiles.textContent = '';
+  var SC = DATA.shortcuts || [];
+  SC.forEach(function (s, i) {
+    var a = document.createElement('a');
+    a.className = 'tile'; a.href = s.url;
+    var ico = document.createElement('span');
+    ico.className = 'ico';
+    ico.textContent = (s.title || '?').charAt(0).toUpperCase();
+    ico.style.background = colorFor(s.title || '');
+    var lbl = document.createElement('span');
+    lbl.className = 'lbl'; lbl.textContent = s.title;
+    var more = document.createElement('button');
+    more.className = 'more'; more.textContent = '\u22EE'; more.title = 'Edit or remove';
+    more.addEventListener('click', function (e) {
+      e.preventDefault(); e.stopPropagation();
+      var r = more.getBoundingClientRect();
+      openMenu(i, r.left, r.bottom);
+    });
+    a.addEventListener('contextmenu', function (e) { e.preventDefault(); openMenu(i, e.clientX, e.clientY); });
+    a.appendChild(ico); a.appendChild(lbl); a.appendChild(more);
+    tiles.appendChild(a);
+  });
+  if (SC.length < 10) {
+    var add = document.createElement('a');
+    add.className = 'tile addtile'; add.href = '#';
+    add.innerHTML = '<span class="ico">+</span><span class="lbl">Add shortcut</span>';
+    add.addEventListener('click', function (e) { e.preventDefault(); act('add', -1); });
+    tiles.appendChild(add);
+  }
+}
+window.addEventListener('hashchange', render);
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>PrivBrowse</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="tabstrip">
+    <div id="tabs"></div>
+    <button id="newtab-btn" title="New tab (Ctrl+T)">+</button>
+    <div id="strip-space"></div>
+  </div>
+
+  <div id="navrow">
+    <button id="back" class="icon" title="Back (Alt+Left)">&#8592;</button>
+    <button id="fwd" class="icon" title="Forward (Alt+Right)">&#8594;</button>
+    <button id="reload" class="icon" title="Reload (Ctrl+R)">&#10227;</button>
+    <div id="pill">
+      <button id="engine-btn" title="Search engine"></button>
+      <input id="url" spellcheck="false" autocomplete="off">
+      <button id="star" class="icon" title="Bookmark this page (Ctrl+D)">&#9734;</button>
+    </div>
+    <button id="shield" class="icon" title="Blocked this session. Click to turn blocking off for this site.">&#128737; 0</button>
+    <button id="dl-btn" class="icon" title="Downloads (Ctrl+J)">&#11015;</button>
+    <button id="menu-btn" class="icon" title="Menu">&#9776;</button>
+  </div>
+
+  <div id="bmbar"></div>
+
+  <div id="findbar" hidden>
+    <span>Find:</span>
+    <input id="find-input" placeholder="Find in page" spellcheck="false">
+    <span id="find-count"></span>
+    <button id="find-prev" class="icon">&#9650;</button>
+    <button id="find-next" class="icon">&#9660;</button>
+    <button id="find-close" class="icon">&#10005;</button>
+  </div>
+
+  <div id="views"></div>
+
+  <div id="dlshelf" hidden></div>
+
+  <div id="statusbar">
+    <span id="status"></span>
+    <span id="filters">Filters: loading&hellip;</span>
+  </div>
+
+  <script src="renderer.js"></script>
+</body>
+</html>
